@@ -19,16 +19,16 @@ jobs:
         run: npm run build
 
       - name: AWS 인증 절차
-        uses: actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ap-northeast-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
       - name: S3 기존 파일을 삭제 후 새로 업로드
         run: |
           aws s3 rm --recursive s3://prod.youtube-web
           aws s3 cp ./dist s3://prod.youtube-web --recursive
       
-      - name: cloudfront 캐시 무효화
+      - name: CloudFront 캐시 무효화
         run: aws cloudfront create-invalidation --distribution-id E1RVZT36LA9KGY --paths "/*"
